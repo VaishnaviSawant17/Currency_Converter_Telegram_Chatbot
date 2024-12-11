@@ -39,7 +39,7 @@ def fetch_conversion_factor(source, target):
 # Route to serve chatbot HTML
 @app.route('/chatbot', methods=['GET'])
 def chatbot():
-    return render_template('templates','chatbotkaka.html')
+    return render_template('chatbotkaka.html')
 
 # Streamlit app
 def run_streamlit():
