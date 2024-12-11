@@ -1,5 +1,9 @@
-from flask import Flask, request,jsonify
+from flask import Flask, request,jsonify,render_template
 import requests
+import threading
+import streamlit as st
+
+#Flask app
 app = Flask(__name__)
 
 
@@ -24,14 +28,33 @@ def index():  # create function
 
 
 def fetch_conversion_factor(source, target):
-    url ="https://free.currconv.com/api/v8/convert?q={}_{}&compact=ultra&apiKey=8ee7ada6101c53ce7eca".format(source,target)
-    
+    url = "https://free.currconv.com/api/v8/convert?q={}_{}&compact=ultra&apiKey=8ee7ada6101c53ce7eca".format(source,target)
+
+
     response = requests.get(url)
     response = response.json()
     print(response)
     return response['{}_{}'.format(source,target)]
 
+# Route to serve chatbot HTML
+@app.route('/chatbot', methods=['GET'])
+def chatbot():
+    return render_template('templates','chatbotkaka.html')
+
+# Streamlit app
+def run_streamlit():
+    st.title("Currency Converter Telegram Bot")
+    st.write("This app runs a Flask-based Telegram bot in the background.")
+    st.success("Flask app is running in the background.")
+    st.write("Open the chatbot interface by visiting: [Chatbot Interface](http://localhost:5000/chatbot)")
+
+# Start Flask in a thread
+def run_flask():
+    app.run(debug=False, use_reloader=False, port=5000)
+
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    threading.Thread(target=run_flask).start()
+    run_streamlit()
+
